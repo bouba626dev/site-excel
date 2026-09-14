@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Accueil — Excel sur mesure{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>Décrivez votre activité, obtenez votre Excel</h2>
+    <p>
+        Commerçants, entrepreneurs, secrétaires, comptables, associations…
+        Décrivez votre besoin en langage naturel et recevez un fichier Excel
+        adapté à votre métier.
+    </p>
+    <p class="status-badge">Projet Django — Étape 1 : squelette fonctionnel</p>
+</section>
+
+<section class="chat-box">
+    <form method="post">
+        {% csrf_token %}
+        <label for="user_text">Décrivez votre activité ou votre besoin :</label>
+        <textarea id="user_text" name="user_text" rows="5" placeholder="Exemple : Je veux gérer une boutique de vêtements ...">{{ user_text }}</textarea>
+        <button type="submit">Envoyer</button>
+    </form>
+
+    {% if specification_json %}
+        <div class="result-box">
+            <h3>JSON de spécification retourné</h3>
+            <pre>{{ specification_json }}</pre>
+        </div>
+    {% endif %}
+
+    {% if generated_file_name %}
+        <div class="result-box">
+            <h3>Fichier Excel généré</h3>
+            <a href="{% url 'download_generated_excel' generated_file_name %}" download="{{ generated_file_name }}">Télécharger le fichier Excel</a>
+        </div>
+    {% endif %}
+</section>
+{% endblock %}
