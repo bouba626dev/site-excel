@@ -10,9 +10,10 @@ class ChatGenerationFlowTest(TestCase):
     def test_post_creates_order_spec_and_excel_and_show_download_link(self):
         payload = {"user_text": "Je veux créer une boutique de vêtements"}
 
-        response = self.client.post(reverse("home"), payload)
+        response = self.client.post(reverse("home"), payload, follow=True)
 
         self.assertEqual(response.status_code, 200)
+        self.assertEqual(response.redirect_chain, [(reverse("generation_result"), 302)])
         self.assertEqual(Order.objects.count(), 1)
         order = Order.objects.get()
         self.assertEqual(order.activity, payload["user_text"])

@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+
+{% block title %}Résultat — Excel sur mesure{% endblock %}
+
+{% block content %}
+<section class="hero">
+    <h2>Votre fichier Excel est prêt</h2>
+    <p>Votre demande a été traitée avec succès.</p>
+    <a href="{% url 'home' %}">Créer un autre fichier</a>
+</section>
+
+<section class="chat-box result-box">
+    <h3>Spécification générée</h3>
+    <pre>{{ specification_json }}</pre>
+    <a href="{% url 'download_generated_excel' generated_file_name %}" download="{{ generated_file_name }}">Télécharger le fichier Excel</a>
+</section>
+{% endblock %}
