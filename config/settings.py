@@ -26,11 +26,21 @@ SECRET_KEY = os.getenv(
 
 DEBUG = os.getenv("DEBUG", "True").lower() in ("true", "1", "yes")
 
-ALLOWED_HOSTS = [
-    host.strip()
-    for host in os.getenv("ALLOWED_HOSTS", "localhost,127.0.0.1").split(",")
-    if host.strip()
-]
+configured_hosts = os.getenv("ALLOWED_HOSTS", "").strip()
+platform_host = (
+    os.getenv("RENDER_EXTERNAL_HOSTNAME")
+    or os.getenv("RAILWAY_PUBLIC_DOMAIN")
+    or os.getenv("WEBSITE_HOSTNAME")
+)
+
+if configured_hosts:
+    ALLOWED_HOSTS = [host.strip() for host in configured_hosts.split(",") if host.strip()]
+elif platform_host:
+    ALLOWED_HOSTS = [platform_host]
+elif DEBUG:
+    ALLOWED_HOSTS = ["localhost", "127.0.0.1"]
+else:
+    ALLOWED_HOSTS = ["*"]
 
 
 # --- Applications installées ---
