@@ -22,7 +22,7 @@
     </form>
 
     {% if specification_json %}
-        <div class="result-box">
+        <div class="result-box" id="generation-result">
             <h3>JSON de spécification retourné</h3>
             <pre>{{ specification_json }}</pre>
         </div>
@@ -35,4 +35,10 @@
         </div>
     {% endif %}
 </section>
+
+{% if specification_json %}
+<script>
+    document.getElementById("generation-result").scrollIntoView({ behavior: "smooth", block: "start" });
+</script>
+{% endif %}
 {% endblock %}
