@@ -8,6 +8,7 @@ depuis le fichier .env à la racine du projet (voir .env.example).
 import os
 from pathlib import Path
 
+import dj_database_url
 from dotenv import load_dotenv
 
 # Chemin racine du projet (dossier contenant manage.py)
@@ -87,29 +88,36 @@ WSGI_APPLICATION = "config.wsgi.application"
 
 
 # --- Base de données ---
-# DB_ENGINE=sqlite  → développement local sans PostgreSQL (fichier db.sqlite3)
-# DB_ENGINE=postgresql → production / quand PostgreSQL est installé (défaut cible)
+# DATABASE_URL est utilisée automatiquement par les hébergeurs qui fournissent
+# une URL PostgreSQL. Les variables DB_* restent disponibles en secours.
 
-DB_ENGINE = os.getenv("DB_ENGINE", "sqlite").lower()
+database_url = os.getenv("DATABASE_URL", "").strip()
 
-if DB_ENGINE == "postgresql":
+if database_url:
     DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.postgresql",
-            "NAME": os.getenv("DB_NAME", "site_excel"),
-            "USER": os.getenv("DB_USER", "postgres"),
-            "PASSWORD": os.getenv("DB_PASSWORD", ""),
-            "HOST": os.getenv("DB_HOST", "localhost"),
-            "PORT": os.getenv("DB_PORT", "5432"),
-        }
+        "default": dj_database_url.parse(database_url, conn_max_age=600)
     }
 else:
-    DATABASES = {
-        "default": {
-            "ENGINE": "django.db.backends.sqlite3",
-            "NAME": BASE_DIR / "db.sqlite3",
+    DB_ENGINE = os.getenv("DB_ENGINE", "sqlite").lower()
+
+    if DB_ENGINE == "postgresql":
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.postgresql",
+                "NAME": os.getenv("DB_NAME", "site_excel"),
+                "USER": os.getenv("DB_USER", "postgres"),
+                "PASSWORD": os.getenv("DB_PASSWORD", ""),
+                "HOST": os.getenv("DB_HOST", "localhost"),
+                "PORT": os.getenv("DB_PORT", "5432"),
+            }
         }
-    }
+    else:
+        DATABASES = {
+            "default": {
+                "ENGINE": "django.db.backends.sqlite3",
+                "NAME": BASE_DIR / "db.sqlite3",
+            }
+        }
 
 
 # --- Validation des mots de passe ---
@@ -142,5 +150,6 @@ USE_TZ = True
 
 STATIC_URL = "static/"
 STATICFILES_DIRS = [BASE_DIR / "static"]
+STATIC_ROOT = BASE_DIR / "staticfiles"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
