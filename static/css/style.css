@@ -21,19 +21,25 @@ body {
 }
 
 .site-header {
-    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    background: linear-gradient(135deg, #17233d 0%, #243b5a 100%);
     color: #fff;
-    padding: 2rem 0;
+    padding: 1.75rem 0 1.9rem;
 }
 
 .logo {
     margin: 0;
-    font-size: 1.75rem;
+    color: #fff;
+    font-size: clamp(1.55rem, 5vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: 0.01em;
 }
 
 .tagline {
-    margin: 0.5rem 0 0;
-    opacity: 0.85;
+    max-width: 34rem;
+    margin: 0.45rem 0 0;
+    color: rgba(255, 255, 255, 0.84);
+    font-size: 0.98rem;
+    line-height: 1.45;
 }
 
 .hero {
