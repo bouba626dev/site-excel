@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Order(models.Model):
@@ -6,6 +7,7 @@ class Order(models.Model):
 
     class Status(models.TextChoices):
         EN_ATTENTE = "en_attente", "En attente"
+        EN_ATTENTE_PAIEMENT = "en_attente_paiement", "En attente de paiement"
         GENEREE = "generee", "Générée"
         PAYEE = "payee", "Payée"
         TELECHARGEE = "telechargee", "Téléchargée"
@@ -13,6 +15,14 @@ class Order(models.Model):
     activity = models.TextField(
         verbose_name="Activité",
         help_text="Description de l'activité telle que saisie par le client.",
+    )
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.CASCADE,
+        related_name="orders",
+        null=True,
+        blank=True,
+        verbose_name="Utilisateur",
     )
     status = models.CharField(
         max_length=20,

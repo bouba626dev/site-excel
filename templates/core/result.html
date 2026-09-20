@@ -5,13 +5,24 @@
 {% block content %}
 <section class="hero">
     <h2>Votre fichier Excel est prêt</h2>
-    <p>Votre demande a été traitée avec succès.</p>
-    <a href="{% url 'home' %}">Créer un autre fichier</a>
+    <p>Voici le résumé de votre demande. Connectez-vous pour poursuivre.</p>
 </section>
 
 <section class="chat-box result-box">
     <h3>Spécification générée</h3>
     <pre>{{ specification_json }}</pre>
-    <a href="{% url 'download_generated_excel' generated_file_name %}" download="{{ generated_file_name }}">Télécharger le fichier Excel</a>
+    {% if not request.user.is_authenticated %}
+        <p>Un compte est nécessaire avant la confirmation du paiement.</p>
+        <a href="{% url 'login' %}">Se connecter</a>
+        <a href="{% url 'signup' %}">Créer un compte</a>
+    {% elif can_confirm_payment %}
+        <form method="post" action="{% url 'confirm_payment' %}">
+            {% csrf_token %}
+            <button type="submit">Confirmer (paiement à venir)</button>
+        </form>
+    {% elif generated_file_name %}
+        <p>Votre paiement simulé est confirmé. Le fichier est disponible.</p>
+        <a href="{% url 'download_generated_excel' generated_file_name %}" download="{{ generated_file_name }}">Télécharger le fichier Excel</a>
+    {% endif %}
 </section>
 {% endblock %}

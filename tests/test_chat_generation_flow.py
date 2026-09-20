@@ -19,15 +19,28 @@ class ChatGenerationFlowTest(TestCase):
 
         self.assertEqual(response.status_code, 200)
         self.assertEqual(response.redirect_chain, [(reverse("generation_result"), 302)])
+        self.assertEqual(Order.objects.count(), 0)
+
+        signup_response = self.client.post(reverse("signup"), {
+            "email": "client@example.com",
+            "password1": "UnMotDePasseSolide123!",
+            "password2": "UnMotDePasseSolide123!",
+        }, follow=True)
+        self.assertEqual(signup_response.status_code, 200)
         self.assertEqual(Order.objects.count(), 1)
         order = Order.objects.get()
         self.assertEqual(order.activity, payload["user_text"])
-        self.assertEqual(order.status, Order.Status.GENEREE)
+        self.assertEqual(order.user.email, "client@example.com")
+        self.assertEqual(order.status, Order.Status.EN_ATTENTE_PAIEMENT)
 
         specification = Specification.objects.get(order=order)
         self.assertEqual(specification.content["activity"], "boutique de vêtements")
         self.assertIn("Produits", specification.content["excel"]["sheets"])
 
-        generated_file_name = response.context["generated_file_name"]
+        confirm_response = self.client.post(reverse("confirm_payment"), {}, follow=True)
+        self.assertEqual(confirm_response.status_code, 200)
+        order.refresh_from_db()
+        self.assertEqual(order.status, Order.Status.GENEREE)
+        generated_file_name = confirm_response.context["generated_file_name"]
         self.assertTrue((Path("media/generated_files") / generated_file_name).exists())
-        self.assertIn("télécharger le fichier excel", response.content.decode("utf-8").lower())
+        self.assertIn("télécharger le fichier excel", confirm_response.content.decode("utf-8").lower())
