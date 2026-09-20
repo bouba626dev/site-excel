@@ -5,7 +5,7 @@ from django.http import FileResponse
 from django.shortcuts import redirect, render
 from django.urls import reverse
 
-from ai_assistant import generate_specification_mock
+from ai_assistant import generate_specification
 from excel_generator import generate_excel_file
 from orders.models import Order, Specification
 
@@ -17,7 +17,7 @@ def home(request):
         if not user_text:
             return render(request, "core/home.html", {"user_text": user_text})
 
-        specification = generate_specification_mock(user_text)
+        specification = generate_specification(user_text)
         order = Order.objects.create(
             activity=user_text,
             status=Order.Status.EN_ATTENTE,
