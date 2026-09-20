@@ -10,16 +10,13 @@
         Décrivez votre besoin en langage naturel et recevez un fichier Excel
         adapté à votre métier.
     </p>
-    <p class="status-badge">Projet Django — Étape 1 : squelette fonctionnel</p>
-</section>
-
-<section class="chat-box">
     <form method="post">
         {% csrf_token %}
         <label for="user_text">Décrivez votre activité ou votre besoin :</label>
         <textarea id="user_text" name="user_text" rows="5" placeholder="Exemple : Je veux gérer une boutique de vêtements ...">{{ user_text }}</textarea>
         <button type="submit">Envoyer</button>
     </form>
+</section>
 
     {% if specification_json %}
         <div class="result-box" id="generation-result">
