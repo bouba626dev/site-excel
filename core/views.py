@@ -73,18 +73,30 @@ def confirm_payment(request):
     specification = json.loads(result["specification_json"])
     generated_file_path = generate_excel_file(specification)
     order.status = Order.Status.GENEREE
-    order.save(update_fields=["status", "updated_at"])
+    order.generated_file_name = Path(generated_file_path).name
+    order.save(update_fields=["status", "generated_file_name", "updated_at"])
     result["generated_file_name"] = Path(generated_file_path).name
     request.session.modified = True
     return redirect("generation_result")
 
 
 @login_required
+def history(request):
+    """Affiche uniquement les commandes de l'utilisateur connecté."""
+    orders = Order.objects.filter(user=request.user).order_by("-created_at")
+    return render(request, "core/history.html", {"orders": orders})
+
+
+@login_required
 def download_generated_excel(request, filename):
     """Serve a generated Excel file as a download attachment."""
-    result = request.session.get("generation_result", {})
-    if result.get("generated_file_name") != filename:
-        return redirect("generation_result")
+    order = Order.objects.filter(
+        user=request.user,
+        status=Order.Status.GENEREE,
+        generated_file_name=filename,
+    ).first()
+    if order is None:
+        return redirect("history")
 
     file_path = Path(__file__).resolve().parent.parent / "media" / "generated_files" / filename
 

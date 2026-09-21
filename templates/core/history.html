@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Historique — Excel sur mesure{% endblock %}
+
+{% block content %}
+<section class="hero history-page">
+    <h2>Mon historique</h2>
+    <p>Retrouvez ici toutes les demandes liées à votre compte.</p>
+
+    {% if orders %}
+        <div class="history-list">
+            {% for order in orders %}
+                <article class="history-item">
+                    <div>
+                        <h3>{{ order.activity }}</h3>
+                        <p class="history-date">Créée le {{ order.created_at|date:"d/m/Y à H:i" }}</p>
+                    </div>
+                    <div class="history-status">
+                        <span class="status status-{{ order.status }}">{{ order.get_status_display }}</span>
+                        {% if order.status == "generee" and order.generated_file_name %}
+                            <a href="{% url 'download_generated_excel' order.generated_file_name %}" download="{{ order.generated_file_name }}">Télécharger le fichier Excel</a>
+                        {% else %}
+                            <span class="history-pending">Fichier en cours</span>
+                        {% endif %}
+                    </div>
+                </article>
+            {% endfor %}
+        </div>
+    {% else %}
+        <p class="empty-history">Aucune commande pour le moment.</p>
+    {% endif %}
+</section>
+{% endblock %}

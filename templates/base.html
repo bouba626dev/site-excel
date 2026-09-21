@@ -12,6 +12,12 @@
         <div class="container">
             <h1 class="logo">Excel sur mesure</h1>
             <p class="tagline">Votre outil Excel, généré pour votre activité</p>
+            {% if request.user.is_authenticated %}
+                <nav class="site-nav" aria-label="Navigation du compte">
+                    <a href="{% url 'history' %}">Historique</a>
+                    <a href="{% url 'logout' %}">Déconnexion</a>
+                </nav>
+            {% endif %}
         </div>
     </header>
 

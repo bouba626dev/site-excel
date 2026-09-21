@@ -42,6 +42,18 @@ body {
     line-height: 1.45;
 }
 
+.site-nav {
+    display: flex;
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.site-nav a {
+    color: #fff;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
 .hero {
     background: #fff;
     border-radius: 12px;
@@ -109,9 +121,75 @@ body {
     background: #17233d;
 }
 
+.history-list {
+    display: grid;
+    gap: 1rem;
+    margin-top: 1.75rem;
+}
+
+.history-item {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1rem;
+    border: 1px solid #e5e8ef;
+    border-radius: 8px;
+    background: #fbfcff;
+}
+
+.history-item h3 {
+    margin: 0;
+    color: #16213e;
+    font-size: 1rem;
+}
+
+.history-date,
+.history-pending {
+    margin: 0.35rem 0 0;
+    color: #666;
+    font-size: 0.9rem;
+}
+
+.history-status {
+    display: grid;
+    justify-items: end;
+    gap: 0.4rem;
+    text-align: right;
+}
+
+.status {
+    padding: 0.25rem 0.55rem;
+    color: #16213e;
+    background: #e8edf5;
+    border-radius: 999px;
+    font-size: 0.82rem;
+    font-weight: 600;
+}
+
+.status-generee {
+    color: #1b5e20;
+    background: #e8f4ea;
+}
+
+.empty-history {
+    margin-top: 1.5rem;
+    color: #666;
+}
+
 .site-footer {
     text-align: center;
     padding: 2rem 0;
     color: #666;
     font-size: 0.9rem;
+}
+
+@media (max-width: 600px) {
+    .history-item {
+        display: grid;
+    }
+
+    .history-status {
+        justify-items: start;
+        text-align: left;
+    }
 }
